@@ -9,24 +9,38 @@ class Renavam extends Sanitization
     public function validateRenavam($attribute, $renavam): bool
     {
         $renavam = $this->sanitize($renavam);
-        $sum = 0;
-        $renavamArray = str_split($renavam);
-        $digitCount = 0;
 
-        for ($i = 5; $i >= 2; $i--) {
-            $sum += $renavamArray[$digitCount] * $i;
-            $digitCount++;
+        $renavam = str_pad($renavam, 11, "0", STR_PAD_LEFT);
+
+        if (!preg_match("/[0-9]{11}/", $renavam)) {
+            return false;
         }
 
-        $valor = $sum % 11;
+        $renavamSemDigito = substr($renavam, 0, 10);
+        $renavamReversoSemDigito = strrev($renavamSemDigito);
 
-        $digit = $valor;
+        $soma = 0;
+        $multiplicador = 2;
+        for ($i = 0; $i < 10; $i++) {
+            $algarismo = substr($renavamReversoSemDigito, $i, 1);
+            $soma += $algarismo * $multiplicador;
 
-        if ($valor == 11 || $valor == 0 || $valor >= 10) {
-            $digit = 0;
+            if ($multiplicador >= 9) {
+                $multiplicador = 2;
+            } else {
+                $multiplicador++;
+            }
         }
 
-        if ($digit == $renavamArray[4]) {
+        $mod11 = $soma % 11;
+
+        $ultimoDigitoCalculado = 11 - $mod11;
+
+        $ultimoDigitoCalculado = ($ultimoDigitoCalculado >= 10 ? 0 : $ultimoDigitoCalculado);
+
+        $digitoRealInformado = substr($renavam, -1);
+
+        if ($ultimoDigitoCalculado == $digitoRealInformado) {
             return true;
         }
 

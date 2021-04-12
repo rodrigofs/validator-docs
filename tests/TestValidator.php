@@ -384,11 +384,11 @@ final class TestValidator extends ValidatorTestCase
         $this->assertTrue($correct->{$assert}());
     }
 
-    /** @test**/
+    /** @test **/
     public function formatoRenavam()
     {
         $correct = Validator::make(
-            ['certo' => '197073212'],
+            ['certo' => '00197073212'],
             ['certo' => 'renavam']
         );
 
@@ -401,7 +401,7 @@ final class TestValidator extends ValidatorTestCase
         $this->assertTrue($incorrect->fails());
 
         $correct = Validator::make(
-            ['certo' => '1970.73212'],
+            ['certo' => '0019707321-2'],
             ['certo' => 'renavam']
         );
 
